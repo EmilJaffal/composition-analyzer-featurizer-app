@@ -44,17 +44,3 @@ def print_match_option():
     print(introductory_paragraph)
 
 
-def ascend_order():
-    is_ascending_order = click.confirm(
-        "\nWould you like to sort the indices in ascending order? (Default is Y)",
-        default=True,
-    )
-    return is_ascending_order
-
-
-def normalize_formula():
-    is_indices_as_fractions = click.confirm(
-        "\nWould you like to convert indices into fractions? (Default is N)",
-        default=False,
-    )
-    return is_indices_as_fractions

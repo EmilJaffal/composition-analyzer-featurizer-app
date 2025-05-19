@@ -1,5 +1,5 @@
 import os
-
+import click
 import pandas as pd
 
 from app.util import folder, prompt
@@ -27,10 +27,8 @@ def run_sort_option(script_dir_path):
 
     if sort_method == 1:
         _run_sort_by_custom_label(formulas, df, dir_path, excel_filename)
-
     if sort_method == 2:
         _run_sort_by_stoichiometry(formulas, df, dir_path, excel_filename)
-
     if sort_method == 3:
         _run_run_sort_by_property(formulas, df, dir_path, excel_filename)
 
@@ -60,7 +58,6 @@ def _run_sort_by_stoichiometry(formulas, df, dir_path, filename):
 
 
 def _run_run_sort_by_property(formulas, df, dir_path, filename):
-    # Prompt all the properties and the number
     selected_property = Property.select()
     oliynyk = Oliynyk()
     is_ascending, is_normalized = _ask_ascending_normalize()
@@ -71,7 +68,6 @@ def _run_run_sort_by_property(formulas, df, dir_path, filename):
         )
         formulas_sorted.append(formula_sorted)
     df["Sorted Formula"] = formulas_sorted
-    # Indiiate, ascend, normalize to the filename if needed
     filename = f"{filename}_by_property_{selected_property.name}"
     filename = _add_suffixes(filename, is_ascending, is_normalized)
     _save_sorted_to_excel(df, dir_path, filename)
@@ -88,13 +84,27 @@ def _add_suffixes(filename, is_ascending, is_normalized, method=None):
 
 
 def _ask_ascending_normalize():
-    is_ascending = prompt.ascend_order()
-    is_normalized = prompt.normalize_formula()
+    is_ascending = _ascend_order()
+    is_normalized = _normalize_formula()
     return is_ascending, is_normalized
 
 
 def _save_sorted_to_excel(df, dir_path, filename):
-    # Save the sorted formulas to a new Excel file
     output_path = os.path.join(dir_path, f"{filename}.xlsx")
     df.to_excel(output_path, index=False)
     print(f"Sorted formulas saved to {output_path}")
+
+def _ascend_order():
+    is_ascending_order = click.confirm(
+        "\nWould you like to sort the indices in ascending order? (Default is Y)",
+        default=True,
+    )
+    return is_ascending_order
+
+
+def _normalize_formula():
+    is_indices_as_fractions = click.confirm(
+        "\nWould you like to convert indices into fractions? (Default is N)",
+        default=False,
+    )
+    return is_indices_as_fractions

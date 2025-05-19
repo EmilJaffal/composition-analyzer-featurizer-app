@@ -4,7 +4,7 @@ import click
 import pandas as pd
 
 from app.filter_util.parser import parse_formula1
-from app.filter_util.processor import get_excel_df, parse_entry_formula
+from app.filter_util.processor import parse_entry_formula
 
 
 def sort_formulas_in_excel_or_folder(script_dir, available_files):
