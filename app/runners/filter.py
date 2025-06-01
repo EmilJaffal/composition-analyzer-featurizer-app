@@ -15,9 +15,7 @@ from app.filter_util import (
 
 
 def run_filter_option(script_path):
-    """
-    Filtering function coded by Emil Jaffal
-    """
+    """Filtering function coded by Emil Jaffal."""
     prompt.sort_formulas_in_excel_or_folder(script_path, os.listdir(script_path))
 
     # Display .cif files and .xlsx files in the script's directory

@@ -1,7 +1,6 @@
 import glob
 import os
-from os.path import exists, join
-from shutil import move, rmtree
+from os.path import join
 
 import pandas as pd
 

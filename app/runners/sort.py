@@ -94,6 +94,7 @@ def _save_sorted_to_excel(df, dir_path, filename):
     df.to_excel(output_path, index=False)
     print(f"Sorted formulas saved to {output_path}")
 
+
 def _ascend_order():
     is_ascending_order = click.confirm(
         "\nWould you like to sort the indices in ascending order? (Default is Y)",

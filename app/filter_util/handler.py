@@ -5,6 +5,7 @@ import click
 # Save files that have errros and save the dataframe
 # These are usualy files that are valid
 
+
 def handle_errors(errors_df, chosen_file, Output_folder):
     """Handle errors found in the DataFrame."""
     if not errors_df.empty:

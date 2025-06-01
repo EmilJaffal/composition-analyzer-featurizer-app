@@ -42,5 +42,3 @@ def print_match_option():
     )
 
     print(introductory_paragraph)
-
-

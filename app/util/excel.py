@@ -15,7 +15,7 @@ def select_directory_and_file(script_directory):
 
 
 def choose_excel_file(script_directory):
-    """ " Lets the user choose an Excel file from the specified directory."""
+    """" Lets the user choose an Excel file from the specified directory."""
     files = [f for f in os.listdir(script_directory) if f.endswith(".xlsx")]
     # Sort the files alphabetically
     files.sort()

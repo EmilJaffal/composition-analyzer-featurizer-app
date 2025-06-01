@@ -1,2 +1,6 @@
 numpy
-pytest
+click
+pandas
+matplotlib
+bobleesj.utils
+composition-analyzer-featurizer
