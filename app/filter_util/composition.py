@@ -3,6 +3,9 @@ import os
 import click
 import pandas as pd
 
+# 1. Filter formulas based on composition type
+# 2. Remove any elements if needed -> Save (1) formulas do not contain the elements 2) formulas that contain the element specified
+
 
 def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy):
     filter_choice = click.prompt(
