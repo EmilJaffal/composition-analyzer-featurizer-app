@@ -2,7 +2,7 @@ default_language_version:
   python: python3
 repos:
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
       - id: black
   # prettier - multi formatter for .json, .yml, and .md files
@@ -14,7 +14,7 @@ repos:
           - "prettier@^3.2.4"
   # docformatter - PEP 257 compliant docstring formatter
   - repo: https://github.com/s-weigand/docformatter
-    rev: 5757c5190d95e5449f102ace83df92e7d3b06c6c
+    rev: 886a0329b3949dfb8be9f10f80bc96829923debe
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
