@@ -60,8 +60,23 @@ def element_prevalence(
         for row, column, symbol in zip(rows, columns, symbols):
             row = ptable["row"].max() - row
             if symbol in [
-                "Fr", "Ra", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
-                "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og",
+                "Fr",
+                "Ra",
+                "Rf",
+                "Db",
+                "Sg",
+                "Bh",
+                "Hs",
+                "Mt",
+                "Ds",
+                "Rg",
+                "Cn",
+                "Nh",
+                "Fl",
+                "Mc",
+                "Lv",
+                "Ts",
+                "Og",
             ]:
                 continue
 
