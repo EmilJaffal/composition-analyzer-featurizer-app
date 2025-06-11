@@ -115,7 +115,7 @@ def element_prevalence(
             ax.add_patch(rect)
 
         # Draw gradient scale on top of the periodic table
-        scale_height = .9
+        scale_height = 0.9
         scale_width = n_column * 0.35
         scale_x = (n_column - scale_width) / 2.5
         scale_y = n_row + 0.3
