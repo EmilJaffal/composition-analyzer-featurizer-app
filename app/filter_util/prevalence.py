@@ -34,9 +34,31 @@ def element_prevalence(
         rw = 1.0  # rectangle width (rw)
         rh = 1.0  # rectangle height (rh)
 
+        # Define a 7-color scale: 0 is white
+        scale_colors = [
+            "#ffffff",  # white for zero
+            "#ffffe0",  # pale yellow
+            "#bfe3c0",  # light green
+            "#7fc7c7",  # muted teal
+            "#8fd3e8",  # light blue
+            "#1e90ff",  # dodger blue
+            "#005bb5",  # medium blue
+        ]
+
+        # Calculate min and max counts for binning
+        counts = np.array(elem_tracker.values)
+        count_max = counts.max()
+
+        # Compute bin edges for 7 bins: 0, step1, ..., step5, max
+        bin_edges = np.linspace(0, count_max, 7)
+        bin_edges = np.round(bin_edges).astype(int)
+        bin_edges[-1] = count_max  # Ensure last edge is exactly max
+
+        # For np.digitize, use all but the last edge
+        digitize_edges = bin_edges[:-1]  # [0, step1, ..., step5]
+
         for row, column, symbol in zip(rows, columns, symbols):
             row = ptable["row"].max() - row
-            # Condition to skip elements based on symbol
             if symbol in [
                 "Fr",
                 "Ra",
@@ -58,23 +80,18 @@ def element_prevalence(
             ]:
                 continue
 
-            cmap = cm.GnBu  # Color
-            count_min = elem_tracker.min()
-            count_max = elem_tracker.max()
-            count_max = count_max + 24
-
-            norm = Normalize(vmin=count_min, vmax=count_max)
             count = elem_tracker[symbol]
-
             if log_scale:
-                norm = Normalize(vmin=np.log(1), vmax=np.log(count_max))
-                if count != 0:
-                    count = np.log(count)
-            color = cmap(norm(count))
-            if count == 0:
-                color = "white"
-            if 0 < count <= 10:
-                color = "lightyellow"
+                count = np.log(count) if count != 0 else 0
+
+            # Special case: assign max value to the last bin
+            if count == count_max:
+                bin_idx = 6
+            else:
+                bin_idx = np.digitize(count, digitize_edges, right=False) - 1
+                bin_idx = min(max(bin_idx, 0), 6)
+            color = scale_colors[bin_idx]
+
             rect = patches.Rectangle(
                 (column, row),
                 rw,
@@ -98,24 +115,21 @@ def element_prevalence(
             ax.add_patch(rect)
 
         # Draw gradient scale on top of the periodic table
+        scale_height = 0.9
+        scale_width = n_column * 0.35
+        scale_x = (n_column - scale_width) / 2.5
+        scale_y = n_row + 0.3
+        granularity = 7  # 7 rectangles
 
-        scale_height = 1.1
-        scale_width = n_column * 0.6  # Adjusted scale width
-
-        scale_x = (n_column - scale_width) / 2.5  # Centered horizontally
-        scale_y = n_row + 0.3  # Adjusted scale position
-        cmap = cm.GnBu  # Color
-        granularity = 7  # Reduced granularity
         for i in range(granularity):
-            value = int(round((i) * count_max / (granularity - 1)))
-            if log_scale:
-                if value != 0:
-                    value = np.log(value)
-            color = cmap(norm(value))
-            if value == 0:
-                color = "white"  # white
-            if 0 < value <= 40:
-                color = "lightyellow"
+            if i == 0:
+                value = 0
+            elif i == granularity - 1:
+                value = count_max
+            else:
+                value = int(bin_edges[i])
+            color = scale_colors[i]
+
             x_loc = scale_x + scale_width / granularity * i
             width = scale_width / granularity
             height = scale_height
@@ -130,7 +144,6 @@ def element_prevalence(
             )
             ax.add_patch(rect)
 
-            # Add whole integers below the scale
             plt.text(
                 x_loc + width / 2,
                 scale_y - 0.3,
@@ -142,17 +155,17 @@ def element_prevalence(
                 color="black",
             )
 
-            # Add "Element Count" label
-            plt.text(
-                scale_x + scale_width / 2,
-                scale_y + 2.0,  # Adjust vertical position
-                "Element Count",
-                horizontalalignment="center",
-                verticalalignment="bottom",
-                fontsize=16,
-                fontweight="semibold",
-                color="black",
-            )
+        # Add "Element Count" label (move outside the loop)
+        plt.text(
+            scale_x + scale_width / 2,
+            scale_y + 1.35,
+            "Element Count",
+            horizontalalignment="center",
+            verticalalignment="bottom",
+            fontsize=16,
+            fontweight="semibold",
+            color="black",
+        )
 
         # Set plot limits and turn off axis
         ax.set_ylim(-1.5, n_row + 3)
@@ -172,4 +185,3 @@ def element_prevalence(
 
         plt.draw()
         # plt.pause(0.001)
-        plt.close()
