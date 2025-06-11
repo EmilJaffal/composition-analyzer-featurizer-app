@@ -34,15 +34,15 @@ def element_prevalence(
         rw = 1.0  # rectangle width (rw)
         rh = 1.0  # rectangle height (rh)
 
-        # Define a 7-color scale: 0 is white, then 5 blues, last is navy
+        # Define a 7-color scale: 0 is white
         scale_colors = [
             "#ffffff",  # white for zero
             "#ffffe0",  # pale yellow
-            "#b3d8ff",  # light blue
-            "#40e0d0",  # teal
+            "#bfe3c0",  # light green
+            "#7fc7c7",  # muted teal
+            "#8fd3e8",  # light blue
             "#1e90ff",  # dodger blue
             "#005bb5",  # medium blue
-            "#001f3f",  # navy (very dark blue)
         ]
 
         # Calculate min and max counts for binning
@@ -115,8 +115,8 @@ def element_prevalence(
             ax.add_patch(rect)
 
         # Draw gradient scale on top of the periodic table
-        scale_height = 1.1
-        scale_width = n_column * 0.6
+        scale_height = .9
+        scale_width = n_column * 0.35
         scale_x = (n_column - scale_width) / 2.5
         scale_y = n_row + 0.3
         granularity = 7  # 7 rectangles
@@ -158,7 +158,7 @@ def element_prevalence(
         # Add "Element Count" label (move outside the loop)
         plt.text(
             scale_x + scale_width / 2,
-            scale_y + 2.0,
+            scale_y + 1.35,
             "Element Count",
             horizontalalignment="center",
             verticalalignment="bottom",
