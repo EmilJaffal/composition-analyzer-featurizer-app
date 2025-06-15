@@ -1,1 +1,1 @@
-This is the interactive application for CAF (https://github.com/bobleesj/composition-analyzer-featurizer). Please follow the instructions provided in the above GitHub repository to run the application.
+This is the interactive Python application for CAF (https://github.com/bobleesj/composition-analyzer-featurizer). Please follow the instructions provided in http://bobleesj.github.io/CAF to install and run the application.
