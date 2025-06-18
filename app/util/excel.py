@@ -14,9 +14,13 @@ def select_directory_and_file(script_directory):
 
 
 def choose_excel_file(script_directory):
-    """ Lets the user choose an Excel or CSV file from the specified directory."""
-    files = [f for f in os.listdir(script_directory)
-             if f.endswith(".xlsx") or f.endswith(".csv")]
+    """Lets the user choose an Excel or CSV file from the specified
+    directory."""
+    files = [
+        f
+        for f in os.listdir(script_directory)
+        if f.endswith(".xlsx") or f.endswith(".csv")
+    ]
     files.sort()
     if not files:
         print("No Excel or CSV files found in the current path!")
@@ -35,8 +39,9 @@ def choose_excel_file(script_directory):
 
 
 def choose_excel_sheet(excel_path):
-    """Lets the user choose a sheet from the Excel file; returns None for CSV."""
-    if excel_path.lower().endswith('.csv'):
+    """Lets the user choose a sheet from the Excel file; returns None for
+    CSV."""
+    if excel_path.lower().endswith(".csv"):
         return None
     xls = pd.ExcelFile(excel_path)
     sheets = xls.sheet_names
@@ -56,7 +61,7 @@ def choose_excel_sheet(excel_path):
 def load_data_from_excel(excel_path):
     column_name = "Entry"
     ext = os.path.splitext(excel_path)[1].lower()
-    if ext == '.csv':
+    if ext == ".csv":
         return load_csv_data_to_set(excel_path, column_name), None
     sheet = choose_excel_sheet(excel_path)
     return load_excel_data_to_set(excel_path, column_name, sheet), sheet
@@ -73,9 +78,11 @@ def load_csv_data_to_set(csv_path, column_name):
 
 
 def gather_cif_ids_from_files(folder_info):
-    files_lst = [os.path.join(folder_info, f)
-                 for f in os.listdir(folder_info)
-                 if f.endswith(".cif")]
+    files_lst = [
+        os.path.join(folder_info, f)
+        for f in os.listdir(folder_info)
+        if f.endswith(".cif")
+    ]
     cif_ids = set()
     for file_path in files_lst:
         cif_id = parser.get_cif_entry_id(file_path)
