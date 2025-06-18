@@ -92,6 +92,8 @@ def run_filter_option(script_path):
 
     element_count_data_dict = prompt.dataframe_to_dict(element_count_df, elements)
 
+    print(element_count_data_dict)
+
     # Call the function with the list of elements and the relative path to the parent directory
     prevalence.element_prevalence(
         pd.Series(element_count_data_dict), excel_file_path, script_path
