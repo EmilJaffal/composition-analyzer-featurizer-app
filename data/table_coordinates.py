@@ -1,10 +1,9 @@
 def get_classic_coordinates() -> dict[str, tuple[float, float]]:
-    """
-    Return classic periodic table coordinates for each element.
+    """Return classic periodic table coordinates for each element.
 
     The returned dictionary maps each element symbol (e.g., "H", "Fe", "U")
     to a tuple of (x, y) coordinates, where:
-        - x is the column position on the periodic table. 
+        - x is the column position on the periodic table.
         - y is the row position on the periodic table.
     """
     element_coords = {
@@ -114,13 +113,12 @@ def get_classic_coordinates() -> dict[str, tuple[float, float]]:
 
 
 def get_special_coordinates() -> dict[str, tuple[float, float]]:
-    """
-    Return special coordinates for lanthanide and actinide placeholders. 
+    """Return special coordinates for lanthanide and actinide placeholders.
 
     Symbols with a tuple (x, y), that marks their positions
 
-    These are not real elements but symbols ("*", "**", etc.) used in 
-    periodic table plots to indicate where the lanthanide and actinide 
+    These are not real elements but symbols ("*", "**", etc.) used in
+    periodic table plots to indicate where the lanthanide and actinide
     series are referenced from the main table.
     """
     special_coords = {
