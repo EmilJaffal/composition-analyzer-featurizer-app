@@ -45,7 +45,7 @@ def make_table_fig():
     return fig, ax
 
 
-def color_elements(ax, values: dict[str, float]):
+def make_heatmap(ax, values: dict[str, float]):
     """Color elements on a periodic table plot and display a horizontal
     colorbar."""
     coords = get_classic_coordinates()
@@ -146,7 +146,7 @@ def element_prevalence(
                 count = np.log(count) if count > 0 else 0
             values[symbol] = count
 
-        color_elements(ax, values)
+        make_heatmap(ax, values)
 
         # remove extension from filename
         base = os.path.basename(os.path.normpath(excel_file_path))
