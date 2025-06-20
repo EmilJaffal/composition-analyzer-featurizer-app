@@ -36,14 +36,17 @@ def run_feature_option(script_dir_path):
 
     # User select whether to add normalized compositional one-hot encoding
     # is_encoding_added = click.confirm(
-    #     "\nDo you want to include normalized composition vector? (Default is N)",
+    #     "\nDo you want to include normalized composition vector? "
+    #     "(Default is N)",
     #     default=False,
     # )
 
     # if is_encoding_added:
     #     is_all_element_displayed = click.confirm(
-    #         "\nDo you want to include all elements in the composition vector or"
-    #         " only the ones present in the dataset? (Default is Y)",
+    #         "\nDo you want to include all elements in the composition "
+    #         "vector or"
+    #         " only the ones present in the dataset? "
+    #         "(Default is Y)",
     #         default=True,
     #     )
 

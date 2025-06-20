@@ -51,10 +51,9 @@ def compile_element_counts(df, output_dir_path, excel_file_path):
     df = pd.DataFrame(
         list(element_counts.items()), columns=["Element", "# Element"]
     )
-    file_path = os.path.join(
-        output_dir_path,
-        f"{os.path.splitext(os.path.basename(excel_file_path))[0]}_element_count.xlsx",
-    )
+    base_name = os.path.splitext(os.path.basename(excel_file_path))[0]
+    file_name = f"{base_name}_element_count.xlsx"
+    file_path = os.path.join(output_dir_path, file_name)
 
     df = df.sort_values(by="# Element", ascending=False)
     df.to_excel(file_path, index=False)

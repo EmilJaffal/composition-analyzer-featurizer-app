@@ -37,19 +37,21 @@ def list_xlsx_files_with_formula(script_dir_path):
 
     while True:
         try:
-            choice = int(
-                input(
-                    "\nEnter the number corresponding to the Excel file you wish to select: "
-                )
+            prompt_text = (
+                "\nEnter the number corresponding to the Excel file "
+                "you wish to select: "
             )
+            choice = int(input(prompt_text))
             if 1 <= choice <= len(excel_files_with_paths):
                 return excel_files_with_paths[
                     choice - 1
                 ]  # Return the full file path
             else:
-                print(
-                    f"Please enter a number between 1 and {len(excel_files_with_paths)}."
+                error_msg = (
+                    f"Please enter a number between 1 and "
+                    f"{len(excel_files_with_paths)}."
                 )
+                print(error_msg)
         except ValueError:
             print("Invalid input. Please enter a number.")
 
@@ -81,17 +83,18 @@ def choose_dir(script_directory, ext=".cif"):
             print(f"{idx}. {dir_name}")
     while True:
         try:
-            choice = int(
-                input(
-                    "\nEnter the number corresponding to the folder containing .cif files: "
-                )
+            prompt_text = (
+                "\nEnter the number corresponding to the folder "
+                "containing .cif files: "
             )
+            choice = int(input(prompt_text))
             if 1 <= choice <= len(directories):
                 return join(script_directory, directories[choice - 1])
             else:
-                print(
+                error_msg = (
                     f"Please enter a number between 1 and {len(directories)}."
                 )
+                print(error_msg)
         except ValueError:
             print("Invalid input. Please enter a number.")
 

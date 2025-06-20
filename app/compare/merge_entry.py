@@ -84,7 +84,8 @@ def merge_excel_data(
     # Ensure merge key exists in both
     if "Entry" not in df1.columns or "Entry" not in df2.columns:
         raise KeyError(
-            "Missing 'Entry' column in one of the datasets after normalization."
+            "Missing 'Entry' column in one of the datasets after "
+            "normalization."
         )
 
     # Filter to common_cif_ids
@@ -139,9 +140,11 @@ def print_combine_entry_intro_prompt():
         ===
         Welcome to the CIF-File Matching Tool!
 
-        You will be required to provide a file (Excel or CSV) that contains CIF IDs.
+        You will be required to provide a file (Excel or CSV) that contains
+        CIF IDs.
 
-        Upon completion, the script will match the column called \"Entry\" and merge
+        Upon completion, the script will match the column called \"Entry\" and
+        merge
         the chosen featurizer file with another file.
 
         Ensure both files contain a CIF entry number, e.g., 314123, associated

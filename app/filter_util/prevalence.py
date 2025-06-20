@@ -4,7 +4,6 @@ import click
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from matplotlib.cm import get_cmap
 from matplotlib.colors import Normalize
 

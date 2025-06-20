@@ -27,7 +27,8 @@ def sort_formulas_in_excel_or_folder(script_dir, available_files):
 
     if not excel_sheets and not cif_folders:
         click.secho(
-            "No Excel sheets or CIF folders available in the script's directory.",
+            "No Excel sheets or CIF folders available in the script's "
+            "directory.",
             fg="cyan",
         )
         return

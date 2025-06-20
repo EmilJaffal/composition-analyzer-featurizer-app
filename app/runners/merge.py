@@ -1,7 +1,4 @@
-import os
-
 from app.compare import merge_entry
-from app.util import folder
 
 
 def run_merge_option(script_dir_path):

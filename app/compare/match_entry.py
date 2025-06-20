@@ -71,7 +71,8 @@ def generate_and_save_report(
 
     print("\nSummary:")
     print(
-        f"- {len(cif_id_not_found_list)} entries from the Excel sheet are missing.\n"
+        f"- {len(cif_id_not_found_list)} entries from the Excel sheet are "
+        f"missing.\n"
     )
 
     df_missing = pd.DataFrame(

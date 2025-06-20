@@ -106,7 +106,8 @@ def _save_sorted_to_excel(df, dir_path, filename):
 
 def _ascend_order():
     is_ascending_order = click.confirm(
-        "\nWould you like to sort the indices in ascending order? (Default is Y)",
+        "\nWould you like to sort the indices in ascending order? "
+        "(Default is Y)",
         default=True,
     )
     return is_ascending_order

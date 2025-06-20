@@ -36,7 +36,8 @@ def run_filter_option(script_path):
         return
 
     click.secho(
-        "Which file would you like to summarize (If you picked option 1, select the file ending with _sorted.xlsx):",
+        "Which file would you like to summarize (If you picked option 1, "
+        " select the file ending with _sorted.xlsx):",
         fg="cyan",
     )
     for idx, file_name in enumerate(available_files, start=1):
@@ -76,10 +77,9 @@ def run_filter_option(script_path):
         invalid_formulas
     )
 
-    summary_file_path = os.path.join(
-        script_path,
-        f"{os.path.splitext(os.path.basename(excel_file_path))[0]}_summary.xlsx",
-    )
+    base_name = os.path.splitext(os.path.basename(excel_file_path))[0]
+    summary_filename = f"{base_name}_summary.xlsx"
+    summary_file_path = os.path.join(script_path, summary_filename)
     invalid_formulas_copy.to_excel(summary_file_path, index=False)
     click.secho(f"Summary saved to: {summary_file_path}", fg="cyan")
 
@@ -89,10 +89,9 @@ def run_filter_option(script_path):
     ]
 
     # Save the filtered DataFrame to an Excel file with '_filtered' suffix
-    filtered_file_path = os.path.join(
-        script_path,
-        f"{os.path.splitext(os.path.basename(excel_file_path))[0]}_filtered.xlsx",
-    )
+    base_name = os.path.splitext(os.path.basename(excel_file_path))[0]
+    filtered_filename = f"{base_name}_filtered.xlsx"
+    filtered_file_path = os.path.join(script_path, filtered_filename)
     filtered_df.to_excel(filtered_file_path, index=False)
 
     # Compile element counts
@@ -106,7 +105,8 @@ def run_filter_option(script_path):
 
     print(element_count_data_dict)
 
-    # Call the function with the list of elements and the relative path to the parent directory
+    # Call the function with the list of elements and the relative path to
+    # the parent directory
     prevalence.element_prevalence(
         pd.Series(element_count_data_dict), excel_file_path, script_path
     )

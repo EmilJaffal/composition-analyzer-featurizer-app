@@ -1,7 +1,6 @@
 import textwrap
 
 import click
-from bobleesj.utils.sources.oliynyk import Property
 
 
 def choose_sort_method():
@@ -22,7 +21,8 @@ def choose_sort_method():
         click.echo(f"  {index}. {method}")
 
     sort_method = click.prompt(
-        "Choose one of the sorting methods above by entering the corresponding number",
+        "Choose one of the sorting methods above by entering the "
+        "corresponding number",
         type=int,
     )
     return sort_method
