@@ -30,7 +30,9 @@ def choose_excel_file(script_directory):
         print(f"{idx}. {file_name}")
     while True:
         try:
-            choice = int(input("\nEnter the number corresponding to the file: "))
+            choice = int(
+                input("\nEnter the number corresponding to the file: ")
+            )
             if 1 <= choice <= len(files):
                 return os.path.join(script_directory, files[choice - 1])
             print(f"Please enter a number between 1 and {len(files)}.")
@@ -39,8 +41,8 @@ def choose_excel_file(script_directory):
 
 
 def choose_excel_sheet(excel_path):
-    """Lets the user choose a sheet from the Excel file; returns None for
-    CSV."""
+    """Lets the user choose a sheet from the Excel file; returns None
+    for CSV."""
     if excel_path.lower().endswith(".csv"):
         return None
     xls = pd.ExcelFile(excel_path)
@@ -50,7 +52,9 @@ def choose_excel_sheet(excel_path):
         print(f"{idx}. {sheet_name}")
     while True:
         try:
-            choice = int(input("\nEnter the number corresponding to the Excel sheet: "))
+            choice = int(
+                input("\nEnter the number corresponding to the Excel sheet: ")
+            )
             if 1 <= choice <= len(sheets):
                 return sheets[choice - 1]
             print(f"Please enter a number between 1 and {len(sheets)}.")

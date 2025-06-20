@@ -16,7 +16,9 @@ def combine_features_with_database_excel(script_dir_path):
 
     print("\nNext, choose another file.")
     database_file_path = excel.select_directory_and_file(script_dir_path)
-    cif_set_db, database_sheet_name = excel.load_data_from_excel(database_file_path)
+    cif_set_db, database_sheet_name = excel.load_data_from_excel(
+        database_file_path
+    )
 
     common_cif_IDs = cif_set_feat.intersection(cif_set_db)
     if not common_cif_IDs:
@@ -46,7 +48,9 @@ def merge_excel_data(
     if ext1 == ".csv":
         df1 = pd.read_csv(featurized_file_path)
     else:
-        df1 = pd.read_excel(featurized_file_path, sheet_name=featurized_sheet_name)
+        df1 = pd.read_excel(
+            featurized_file_path, sheet_name=featurized_sheet_name
+        )
     if ext2 == ".csv":
         df2 = pd.read_csv(database_file_path)
     else:
@@ -57,7 +61,11 @@ def merge_excel_data(
     df2.columns = df2.columns.str.strip()
 
     # Normalize special column names for merging
-    normalize = {"entry": "Entry", "formula": "Formula", "structure": "Structure"}
+    normalize = {
+        "entry": "Entry",
+        "formula": "Formula",
+        "structure": "Structure",
+    }
     df1 = df1.rename(
         columns={
             c: normalize[c.strip().lower()]
@@ -76,7 +84,8 @@ def merge_excel_data(
     # Ensure merge key exists in both
     if "Entry" not in df1.columns or "Entry" not in df2.columns:
         raise KeyError(
-            "Missing 'Entry' column in one of the datasets after normalization."
+            "Missing 'Entry' column in one of the datasets after "
+            "normalization."
         )
 
     # Filter to common_cif_ids
@@ -88,7 +97,8 @@ def merge_excel_data(
     drop_special = [
         c
         for c in df2.columns
-        if c.lower() in ("formula", "structure") and c.lower() in df1_cols_lower
+        if c.lower() in ("formula", "structure")
+        and c.lower() in df1_cols_lower
     ]
     if drop_special:
         df2 = df2.drop(columns=drop_special)
@@ -108,8 +118,12 @@ def merge_excel_data(
     merged.index = merged.index + 1
     print(merged.head(20))
 
-    featurized_basename = os.path.splitext(os.path.basename(featurized_file_path))[0]
-    database_basename = os.path.splitext(os.path.basename(database_file_path))[0]
+    featurized_basename = os.path.splitext(
+        os.path.basename(featurized_file_path)
+    )[0]
+    database_basename = os.path.splitext(os.path.basename(database_file_path))[
+        0
+    ]
     merged_ext = ".csv" if ext1 == ".csv" and ext2 == ".csv" else ".xlsx"
     out_name = f"{featurized_basename}_{database_basename}_merged{merged_ext}"
 
@@ -126,9 +140,11 @@ def print_combine_entry_intro_prompt():
         ===
         Welcome to the CIF-File Matching Tool!
 
-        You will be required to provide a file (Excel or CSV) that contains CIF IDs.
+        You will be required to provide a file (Excel or CSV) that contains
+        CIF IDs.
 
-        Upon completion, the script will match the column called \"Entry\" and merge
+        Upon completion, the script will match the column called \"Entry\" and
+        merge
         the chosen featurizer file with another file.
 
         Ensure both files contain a CIF entry number, e.g., 314123, associated

@@ -1,14 +1,16 @@
 import os
 
-import numpy as np
-import pandas as pd
 import click
-import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
-from matplotlib.cm import get_cmap
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.cm import get_cmap
+from matplotlib.colors import Normalize
 
-from data.table_coordinates import get_special_coordinates, get_classic_coordinates
+from data.table_coordinates import (
+    get_classic_coordinates,
+    get_special_coordinates,
+)
 
 
 def make_table_fig():
@@ -30,7 +32,12 @@ def make_table_fig():
 
     for symbol, (x, y) in coords.items():
         rect = patches.Rectangle(
-            (x - 0.5, y - 0.5), 1, 1, edgecolor="black", linewidth=1.3, facecolor="none"
+            (x - 0.5, y - 0.5),
+            1,
+            1,
+            edgecolor="black",
+            linewidth=1.3,
+            facecolor="none",
         )
         ax.add_patch(rect)
 
@@ -64,7 +71,12 @@ def make_heatmap(ax, values: dict[str, float]):
         if val == 0:
             # no color for zero counts
             rect = patches.Rectangle(
-                (x - 0.5, y - 0.5), 1, 1, facecolor="none", edgecolor="none", zorder=0
+                (x - 0.5, y - 0.5),
+                1,
+                1,
+                facecolor="none",
+                edgecolor="none",
+                zorder=0,
             )
             ax.add_patch(rect)
             ax.text(
@@ -81,7 +93,12 @@ def make_heatmap(ax, values: dict[str, float]):
 
         rgba = cmap(norm(val))
         rect = patches.Rectangle(
-            (x - 0.5, y - 0.5), 1, 1, facecolor=rgba, edgecolor="none", zorder=0
+            (x - 0.5, y - 0.5),
+            1,
+            1,
+            facecolor=rgba,
+            edgecolor="none",
+            zorder=0,
         )
         ax.add_patch(rect)
 
@@ -152,9 +169,13 @@ def element_prevalence(
         base = os.path.basename(os.path.normpath(excel_file_path))
         name, _ = os.path.splitext(base)
         file_name = (
-            f"{name}_ptable.png" if not name.endswith("_ptable") else f"{name}.png"
+            f"{name}_ptable.png"
+            if not name.endswith("_ptable")
+            else f"{name}.png"
         )
         fig_name = os.path.join(script_path, file_name)
         plt.savefig(fig_name, format="png", bbox_inches="tight", dpi=500)
-        click.secho(f"Periodic table created successfully in {fig_name}", fg="cyan")
+        click.secho(
+            f"Periodic table created successfully in {fig_name}", fg="cyan"
+        )
         plt.draw()

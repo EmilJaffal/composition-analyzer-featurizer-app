@@ -1,16 +1,19 @@
 import os
+
 import click
 import pandas as pd
+from bobleesj.utils.sources.oliynyk import Oliynyk, Property
+from CAF.sort import custom, property, stoichiometry
 
 from app.util import folder, prompt
-from CAF.sort import custom, stoichiometry, property
-from bobleesj.utils.sources.oliynyk import Oliynyk, Property
 
 
 def run_sort_option(script_dir_path):
     sort_method = prompt.choose_sort_method()
     if sort_method in [1, 2, 3, 4]:
-        formula_excel_path = folder.list_xlsx_files_with_formula(script_dir_path)
+        formula_excel_path = folder.list_xlsx_files_with_formula(
+            script_dir_path
+        )
         if formula_excel_path:
             print(f"You've selected: {formula_excel_path}")
     dir_path, base_name = os.path.split(formula_excel_path)
@@ -23,7 +26,9 @@ def run_sort_option(script_dir_path):
     elif "formula" in df.columns:
         formulas = df["formula"].tolist()
     else:
-        raise ValueError("No 'Formula' or 'formula' column found in the Excel file.")
+        raise ValueError(
+            "No 'Formula' or 'formula' column found in the Excel file."
+        )
 
     if sort_method == 1:
         _run_sort_by_custom_label(formulas, df, dir_path, excel_filename)
@@ -34,7 +39,9 @@ def run_sort_option(script_dir_path):
 
 
 def _run_sort_by_custom_label(formulas, df, dir_path, filename):
-    custom_labels = custom.get_custom_labels_from_excel("data/sort/custom-labels.xlsx")
+    custom_labels = custom.get_custom_labels_from_excel(
+        "data/sort/custom-labels.xlsx"
+    )
     formulas_sorted = []
     for formula in formulas:
         formula_sorted = custom.sort(formula, custom_labels)
@@ -53,7 +60,9 @@ def _run_sort_by_stoichiometry(formulas, df, dir_path, filename):
         )
         formulas_sorted.append(formula_sorted)
     df["Sorted Formula"] = formulas_sorted
-    filename = _add_suffixes(filename, "by_stoichiometry", is_ascending, is_normalized)
+    filename = _add_suffixes(
+        filename, "by_stoichiometry", is_ascending, is_normalized
+    )
     _save_sorted_to_excel(df, dir_path, filename)
 
 
@@ -97,7 +106,8 @@ def _save_sorted_to_excel(df, dir_path, filename):
 
 def _ascend_order():
     is_ascending_order = click.confirm(
-        "\nWould you like to sort the indices in ascending order? (Default is Y)",
+        "\nWould you like to sort the indices in ascending order? "
+        "(Default is Y)",
         default=True,
     )
     return is_ascending_order

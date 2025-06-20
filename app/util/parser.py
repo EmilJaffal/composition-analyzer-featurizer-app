@@ -11,8 +11,12 @@ def get_parsed_binary_formula_df(formulas):
         element_B = parsed_formula[1][0]
 
         # Convert indices to float, default to 1.0 if empty
-        element_A_index = float(parsed_formula[0][1]) if parsed_formula[0][1] else 1.0
-        element_B_index = float(parsed_formula[1][1]) if parsed_formula[1][1] else 1.0
+        element_A_index = (
+            float(parsed_formula[0][1]) if parsed_formula[0][1] else 1.0
+        )
+        element_B_index = (
+            float(parsed_formula[1][1]) if parsed_formula[1][1] else 1.0
+        )
 
         normalized_formula = get_normalized_formula(formula)
         parsed_normalized_formula = get_parsed_formula(normalized_formula)
@@ -64,9 +68,15 @@ def get_parsed_ternary_formula_df(formulas):
         element_X = parsed_formula[2][0]
 
         # Convert indices to float, default to 1.0 if empty
-        element_R_index = float(parsed_formula[0][1]) if parsed_formula[0][1] else 1.0
-        element_M_index = float(parsed_formula[1][1]) if parsed_formula[1][1] else 1.0
-        element_X_index = float(parsed_formula[2][1]) if parsed_formula[2][1] else 1.0
+        element_R_index = (
+            float(parsed_formula[0][1]) if parsed_formula[0][1] else 1.0
+        )
+        element_M_index = (
+            float(parsed_formula[1][1]) if parsed_formula[1][1] else 1.0
+        )
+        element_X_index = (
+            float(parsed_formula[2][1]) if parsed_formula[2][1] else 1.0
+        )
 
         normalized_formula = get_normalized_formula(formula)
         parsed_normalized_formula = get_parsed_formula(normalized_formula)
@@ -198,8 +208,8 @@ def extract_tag_from_line(line):
 
 
 def get_formula_from_cif(file_path):
-    """Simply parse the formula from a CIF file Remove "'", empty space Order
-    alphabetically."""
+    """Simply parse the formula from a CIF file Remove "'", empty space
+    Order alphabetically."""
 
     target_line_start = "_chemical_formula_sum"
 
@@ -207,7 +217,9 @@ def get_formula_from_cif(file_path):
         for line in file:
             if line.strip().startswith(target_line_start):
                 # Extract the formula part, assuming it's after the key
-                formula = line.split(target_line_start)[-1].strip().replace("'", "")
+                formula = (
+                    line.split(target_line_start)[-1].strip().replace("'", "")
+                )
                 formula = formula.replace(" ", "")
 
                 return formula
@@ -220,7 +232,9 @@ def get_cif_entry_id(cif_file_path: str) -> str:
     with open(cif_file_path, "r") as file:
         for line in file:
             line = line.strip()
-            if line.startswith("#_database_code") or line.startswith("_database_code"):
+            if line.startswith("#_database_code") or line.startswith(
+                "_database_code"
+            ):
                 # Split the line by whitespace to get the key and value
                 parts = line.split()
                 if len(parts) == 2:

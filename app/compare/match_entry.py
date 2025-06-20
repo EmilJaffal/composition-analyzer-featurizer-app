@@ -10,7 +10,9 @@ def get_new_excel_with_matching_entries(cif_dir_path, script_dir_path):
     prompt.print_match_option()
 
     excel_path = excel.select_directory_and_file(script_dir_path)
-    cif_ids_in_excel, chosen_sheet_name = excel.load_data_from_excel(excel_path)
+    cif_ids_in_excel, chosen_sheet_name = excel.load_data_from_excel(
+        excel_path
+    )
     cif_ids_in_files, _ = excel.gather_cif_ids_from_files(cif_dir_path)
 
     # Filter and save new Excel file
@@ -68,9 +70,14 @@ def generate_and_save_report(
         print("All CIF files in the Excel sheet exists in the folder")
 
     print("\nSummary:")
-    print(f"- {len(cif_id_not_found_list)} entries from the Excel sheet are missing.\n")
+    print(
+        f"- {len(cif_id_not_found_list)} entries from the Excel sheet are "
+        f"missing.\n"
+    )
 
-    df_missing = pd.DataFrame(list(cif_id_not_found_list), columns=["Missing CIF IDs"])
+    df_missing = pd.DataFrame(
+        list(cif_id_not_found_list), columns=["Missing CIF IDs"]
+    )
 
     csv_filename = f"{folder_name}_missing_files.csv"
     csv_path = os.path.join(script_directory, csv_filename)

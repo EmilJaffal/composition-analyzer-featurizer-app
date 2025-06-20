@@ -16,7 +16,9 @@ from app.filter_util import (
 
 def run_filter_option(script_path):
     """Filtering function coded by Emil Jaffal."""
-    prompt.sort_formulas_in_excel_or_folder(script_path, os.listdir(script_path))
+    prompt.sort_formulas_in_excel_or_folder(
+        script_path, os.listdir(script_path)
+    )
 
     # Display .cif files and .xlsx files in the script's directory
     available_files = [
@@ -34,7 +36,8 @@ def run_filter_option(script_path):
         return
 
     click.secho(
-        "Which file would you like to summarize (If you picked option 1, select the file ending with _sorted.xlsx):",
+        "Which file would you like to summarize (If you picked option 1, "
+        " select the file ending with _sorted.xlsx):",
         fg="cyan",
     )
     for idx, file_name in enumerate(available_files, start=1):
@@ -43,7 +46,9 @@ def run_filter_option(script_path):
         "Enter the number corresponding to your choice", type=int
     )
     if 1 <= file_choice <= len(available_files):
-        excel_file_path = os.path.join(script_path, available_files[file_choice - 1])
+        excel_file_path = os.path.join(
+            script_path, available_files[file_choice - 1]
+        )
         click.secho(f"Summarizing file: {excel_file_path}", fg="cyan")
 
     # Define a list of symbols that are not elements
@@ -54,7 +59,9 @@ def run_filter_option(script_path):
 
     # Apply the function to each row in the DataFrame
     parsed_data = (
-        invalid_formulas["Formula"].apply(parser.parse_formula2).apply(pd.Series)
+        invalid_formulas["Formula"]
+        .apply(parser.parse_formula2)
+        .apply(pd.Series)
     )
     invalid_formulas[["Elements", "Counts", "Error"]] = parsed_data.iloc[:, :3]
 
@@ -66,23 +73,25 @@ def run_filter_option(script_path):
         handler.handle_errors(errors_df, excel_file_path, script_path)
 
     # Classification of formulas
-    invalid_formulas_copy = composition.numerical_classification(invalid_formulas)
-
-    summary_file_path = os.path.join(
-        script_path,
-        f"{os.path.splitext(os.path.basename(excel_file_path))[0]}_summary.xlsx",
+    invalid_formulas_copy = composition.numerical_classification(
+        invalid_formulas
     )
+
+    base_name = os.path.splitext(os.path.basename(excel_file_path))[0]
+    summary_filename = f"{base_name}_summary.xlsx"
+    summary_file_path = os.path.join(script_path, summary_filename)
     invalid_formulas_copy.to_excel(summary_file_path, index=False)
     click.secho(f"Summary saved to: {summary_file_path}", fg="cyan")
 
     click.secho("Filtering errors out of your dataframe", fg="cyan")
-    filtered_df = invalid_formulas_copy[invalid_formulas_copy["Error"].isnull()]
+    filtered_df = invalid_formulas_copy[
+        invalid_formulas_copy["Error"].isnull()
+    ]
 
     # Save the filtered DataFrame to an Excel file with '_filtered' suffix
-    filtered_file_path = os.path.join(
-        script_path,
-        f"{os.path.splitext(os.path.basename(excel_file_path))[0]}_filtered.xlsx",
-    )
+    base_name = os.path.splitext(os.path.basename(excel_file_path))[0]
+    filtered_filename = f"{base_name}_filtered.xlsx"
+    filtered_file_path = os.path.join(script_path, filtered_filename)
     filtered_df.to_excel(filtered_file_path, index=False)
 
     # Compile element counts
@@ -90,11 +99,14 @@ def run_filter_option(script_path):
         filtered_df, script_path, excel_file_path
     )
 
-    element_count_data_dict = prompt.dataframe_to_dict(element_count_df, elements)
+    element_count_data_dict = prompt.dataframe_to_dict(
+        element_count_df, elements
+    )
 
     print(element_count_data_dict)
 
-    # Call the function with the list of elements and the relative path to the parent directory
+    # Call the function with the list of elements and the relative path to
+    # the parent directory
     prevalence.element_prevalence(
         pd.Series(element_count_data_dict), excel_file_path, script_path
     )

@@ -1,11 +1,13 @@
 import textwrap
+
 import click
-from bobleesj.utils.sources.oliynyk import Property
 
 
 def choose_sort_method():
     click.echo("\nWelcome to the chemical formula sorting tool!")
-    click.echo("This tool allows you to sort chemical formulas from an Excel file.")
+    click.echo(
+        "This tool allows you to sort chemical formulas from an Excel file."
+    )
 
     sorting_methods = [
         "Custom label - Reorder by the pre-configured label for each element.",
@@ -19,7 +21,8 @@ def choose_sort_method():
         click.echo(f"  {index}. {method}")
 
     sort_method = click.prompt(
-        "Choose one of the sorting methods above by entering the corresponding number",
+        "Choose one of the sorting methods above by entering the "
+        "corresponding number",
         type=int,
     )
     return sort_method
