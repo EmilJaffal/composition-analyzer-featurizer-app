@@ -2,8 +2,10 @@ import os
 
 import click
 import pandas as pd
-from bobleesj.utils.sources.oliynyk import Oliynyk, Property
-from CAF.sort import custom, property, stoichiometry
+from bobleesj.utils.parsers.formula import Formula
+from bobleesj.utils.sorters.elements import Elements
+from bobleesj.utils.sources.oliynyk import Oliynyk
+from bobleesj.utils.sources.oliynyk import Property as P
 
 from app.util import folder, prompt
 
@@ -21,65 +23,74 @@ def run_sort_option(script_dir_path):
     df = pd.read_excel(formula_excel_path)
 
     # Read the Formula or formula column into a list of formulas
+    formulas = _extract_formulas(df)
+
+    if sort_method == 1:
+        _run_sort_by_custom_label(formulas, df, dir_path, excel_filename)
+    elif sort_method == 2:
+        _run_sort_by_stoichiometry(formulas, df, dir_path, excel_filename)
+    elif sort_method == 3:
+        _run_sort_by_property(formulas, df, dir_path, excel_filename)
+
+
+def _extract_formulas(df):
     if "Formula" in df.columns:
-        formulas = df["Formula"].tolist()
+        return df["Formula"].tolist()
     elif "formula" in df.columns:
-        formulas = df["formula"].tolist()
+        return df["formula"].tolist()
     else:
         raise ValueError(
             "No 'Formula' or 'formula' column found in the Excel file."
         )
 
-    if sort_method == 1:
-        _run_sort_by_custom_label(formulas, df, dir_path, excel_filename)
-    if sort_method == 2:
-        _run_sort_by_stoichiometry(formulas, df, dir_path, excel_filename)
-    if sort_method == 3:
-        _run_run_sort_by_property(formulas, df, dir_path, excel_filename)
+
+def _save_and_update(df, formulas_sorted, dir_path, filename):
+    df["Sorted Formula"] = formulas_sorted
+    _save_sorted_to_excel(df, dir_path, filename)
 
 
 def _run_sort_by_custom_label(formulas, df, dir_path, filename):
-    custom_labels = custom.get_custom_labels_from_excel(
-        "data/sort/custom-labels.xlsx"
-    )
-    formulas_sorted = []
-    for formula in formulas:
-        formula_sorted = custom.sort(formula, custom_labels)
-        formulas_sorted.append(formula_sorted)
-    df["Sorted Formula"] = formulas_sorted
+    elements = Elements(excel_path="data/sort/custom-labels.xlsx")
+    formulas_sorted = [
+        Formula(formula).sort_by_custom_label(elements.label_mapping)
+        for formula in formulas
+    ]
     filename = f"{filename}_by_custom_label"
-    _save_sorted_to_excel(df, dir_path, filename)
+    _save_and_update(df, formulas_sorted, dir_path, filename)
 
 
 def _run_sort_by_stoichiometry(formulas, df, dir_path, filename):
     is_ascending, is_normalized = _ask_ascending_normalize()
-    formulas_sorted = []
-    for formula in formulas:
-        formula_sorted = stoichiometry.sort(
-            formula, Oliynyk(), is_ascending, is_normalized
+    oliynyk = Oliynyk()
+    formulas_sorted = [
+        Formula(formula).sort_by_stoichiometry(
+            oliynyk.get_property_data_for_formula(formula, P.MEND_NUM),
+            ascending=is_ascending,
+            normalize=is_normalized,
         )
-        formulas_sorted.append(formula_sorted)
-    df["Sorted Formula"] = formulas_sorted
+        for formula in formulas
+    ]
     filename = _add_suffixes(
-        filename, "by_stoichiometry", is_ascending, is_normalized
+        filename + "_by_stoichiometry", is_ascending, is_normalized
     )
-    _save_sorted_to_excel(df, dir_path, filename)
+    _save_and_update(df, formulas_sorted, dir_path, filename)
 
 
-def _run_run_sort_by_property(formulas, df, dir_path, filename):
-    selected_property = Property.select()
+def _run_sort_by_property(formulas, df, dir_path, filename):
+    selected_property = P.select()
     oliynyk = Oliynyk()
     is_ascending, is_normalized = _ask_ascending_normalize()
-    formulas_sorted = []
-    for formula in formulas:
-        formula_sorted = property.sort(
-            formula, selected_property, oliynyk, is_ascending, is_normalized
+    formulas_sorted = [
+        Formula(formula).sort_by_elemental_property(
+            oliynyk.get_property_data_for_formula(formula, selected_property),
+            ascending=is_ascending,
+            normalize=is_normalized,
         )
-        formulas_sorted.append(formula_sorted)
-    df["Sorted Formula"] = formulas_sorted
+        for formula in formulas
+    ]
     filename = f"{filename}_by_property_{selected_property.name}"
     filename = _add_suffixes(filename, is_ascending, is_normalized)
-    _save_sorted_to_excel(df, dir_path, filename)
+    _save_and_update(df, formulas_sorted, dir_path, filename)
 
 
 def _add_suffixes(filename, is_ascending, is_normalized, method=None):
