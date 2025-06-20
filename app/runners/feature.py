@@ -24,7 +24,13 @@ def run_feature_option(script_dir_path):
     _, base_name = os.path.split(formula_excel_path)
     base_name_no_ext = os.path.splitext(base_name)[0]
     df = pd.read_excel(formula_excel_path)
-    formulas = df["Formula"]
+    try:
+        col = next(c for c in df.columns if c.lower() == "formula")
+    except StopIteration:
+        print("No formula column found. Exiting.")
+        return
+
+    formulas = df[col]
 
     # User select whether to add normalized compositional one-hot encoding
     # is_encoding_added = click.confirm(

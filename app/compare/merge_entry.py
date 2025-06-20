@@ -8,88 +8,130 @@ from app.util import excel
 
 def combine_features_with_database_excel(script_dir_path):
     print_combine_entry_intro_prompt()
-    print("Choose an Excel file with featurized content.")
-    featurized_excel_path = excel.select_directory_and_file(script_dir_path)
-
-    # Choose the featurizer Excel file
-    (
-        cif_id_set_from_featurized_excel,
-        featurized_excel_sheet_name,
-    ) = excel.load_data_from_excel(featurized_excel_path)
-
-    print("\nNext, choose another Excel file.")
-    database_excel_path = excel.select_directory_and_file(script_dir_path)
-
-    # Choose the database Excel file
-    (
-        cif_id_set_from_database_excel,
-        database_excel_sheet_name,
-    ) = excel.load_data_from_excel(database_excel_path)
-
-    # Check entries that are common to one another
-    common_cif_ids = cif_id_set_from_featurized_excel.intersection(
-        cif_id_set_from_database_excel
+    print("Choose a file with featurized content.")
+    featurized_file_path = excel.select_directory_and_file(script_dir_path)
+    cif_set_feat, featurized_sheet_name = excel.load_data_from_excel(
+        featurized_file_path
     )
-    if not common_cif_ids:
-        print("No common CIF IDs found.")
+
+    print("\nNext, choose another file.")
+    database_file_path = excel.select_directory_and_file(script_dir_path)
+    cif_set_db, database_sheet_name = excel.load_data_from_excel(database_file_path)
+
+    common_cif_IDs = cif_set_feat.intersection(cif_set_db)
+    if not common_cif_IDs:
+        print("No common_cif_IDs CIF IDs found.")
         return
 
     merge_excel_data(
-        featurized_excel_path,
-        featurized_excel_sheet_name,
-        database_excel_path,
-        database_excel_sheet_name,
-        common_cif_ids,
+        featurized_file_path,
+        featurized_sheet_name,
+        database_file_path,
+        database_sheet_name,
+        common_cif_IDs,
     )
-    # Use the common cif ids to combine the entries together
 
 
 def merge_excel_data(
-    featurized_excel_path,
+    featurized_file_path,
     featurized_sheet_name,
-    database_excel_path,
+    database_file_path,
     database_sheet_name,
     common_cif_ids,
 ):
-    # Load the Excel files into pandas DataFrames
-    featurized_df = pd.read_excel(
-        featurized_excel_path, sheet_name=featurized_sheet_name
+    ext1 = os.path.splitext(featurized_file_path)[1].lower()
+    ext2 = os.path.splitext(database_file_path)[1].lower()
+
+    # Read inputs
+    if ext1 == ".csv":
+        df1 = pd.read_csv(featurized_file_path)
+    else:
+        df1 = pd.read_excel(featurized_file_path, sheet_name=featurized_sheet_name)
+    if ext2 == ".csv":
+        df2 = pd.read_csv(database_file_path)
+    else:
+        df2 = pd.read_excel(database_file_path, sheet_name=database_sheet_name)
+
+    # Strip whitespace from column names
+    df1.columns = df1.columns.str.strip()
+    df2.columns = df2.columns.str.strip()
+
+    # Normalize special column names for merging
+    normalize = {"entry": "Entry", "formula": "Formula", "structure": "Structure"}
+    df1 = df1.rename(
+        columns={
+            c: normalize[c.strip().lower()]
+            for c in df1.columns
+            if c.strip().lower() in normalize
+        }
     )
-    database_df = pd.read_excel(database_excel_path, sheet_name=database_sheet_name)
+    df2 = df2.rename(
+        columns={
+            c: normalize[c.strip().lower()]
+            for c in df2.columns
+            if c.strip().lower() in normalize
+        }
+    )
 
-    # Filter DataFrames to include only rows with common CIF IDs
-    featurized_df = featurized_df[featurized_df["Entry"].isin(common_cif_ids)]
-    database_df = database_df[database_df["Entry"].isin(common_cif_ids)]
+    # Ensure merge key exists in both
+    if "Entry" not in df1.columns or "Entry" not in df2.columns:
+        raise KeyError(
+            "Missing 'Entry' column in one of the datasets after normalization."
+        )
 
-    # Assuming 'Entry' is the common column and you want to merge using an inner join
-    merged_df = pd.merge(featurized_df, database_df, on="Entry", how="inner")
+    # Filter to common_cif_ids
+    df1 = df1[df1["Entry"].isin(common_cif_ids)]
+    df2 = df2[df2["Entry"].isin(common_cif_ids)]
 
-    # Print the first 20 rows of the merged dataframe to inspect it
-    merged_df.index = merged_df.index + 1
-    print(merged_df.head(20))
+    # Drop duplicated special columns from df2 (only Formula, Structure)
+    df1_cols_lower = {c.lower() for c in df1.columns}
+    drop_special = [
+        c
+        for c in df2.columns
+        if c.lower() in ("formula", "structure") and c.lower() in df1_cols_lower
+    ]
+    if drop_special:
+        df2 = df2.drop(columns=drop_special)
 
-    # Generate the merged output file name
-    featurized_basename = os.path.splitext(os.path.basename(featurized_excel_path))[0]
-    database_basename = os.path.splitext(os.path.basename(database_excel_path))[0]
-    merged_output_filename = f"{featurized_basename}_{database_basename}_merged.xlsx"
+    # Merge on Entry
+    merged = pd.merge(df1, df2, on="Entry", how="inner")
 
-    # Output the merged DataFrame to an Excel file
-    merged_df.to_excel(merged_output_filename, index=False)
-    print(f"Merged data saved to {merged_output_filename}")
+    # Reorder: Entry, Formula, Structure at front if present
+    front = ["Entry"]
+    for col in ["Formula", "Structure"]:
+        if col in merged.columns:
+            front.append(col)
+    rest = [c for c in merged.columns if c not in front]
+    merged = merged[front + rest]
+
+    # Display and save
+    merged.index = merged.index + 1
+    print(merged.head(20))
+
+    featurized_basename = os.path.splitext(os.path.basename(featurized_file_path))[0]
+    database_basename = os.path.splitext(os.path.basename(database_file_path))[0]
+    merged_ext = ".csv" if ext1 == ".csv" and ext2 == ".csv" else ".xlsx"
+    out_name = f"{featurized_basename}_{database_basename}_merged{merged_ext}"
+
+    if merged_ext == ".csv":
+        merged.to_csv(out_name, index=False)
+    else:
+        merged.to_excel(out_name, index=False)
+    print(f"Merged data saved to {out_name}")
 
 
 def print_combine_entry_intro_prompt():
     introductory_paragraph = textwrap.dedent(
         """\
         ===
-        Welcome to the CIF-Excel Matching Tool!
+        Welcome to the CIF-File Matching Tool!
 
-        You will be required to provide an Excel file that contains CIF IDs.
+        You will be required to provide a file (Excel or CSV) that contains CIF IDs.
 
-        Upon completion, the script will match the column called "Entry" and merge
-        the chosen featurizer Excel with another Excel file.
+        Upon completion, the script will match the column called \"Entry\" and merge
+        the chosen featurizer file with another file.
 
-        Ensure both Excel files contain a CIF entry number, e.g., 314123, associated
+        Ensure both files contain a CIF entry number, e.g., 314123, associated
         with a column.
 
         Let's get started!

@@ -22,7 +22,7 @@ def list_xlsx_files_with_formula(script_dir_path):
         try:
             # Attempt to read the first column of the Excel file
             df = pd.read_excel(file_path, nrows=0)  # Read only headers
-            if "Formula" in df.columns:
+            if any(col.lower() == "formula" for col in df.columns):
                 excel_files_with_paths.append(file_path)
         except Exception as e:
             print(f"Error reading {file_path}: {e}")
