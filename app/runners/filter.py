@@ -16,7 +16,9 @@ from app.filter_util import (
 
 def run_filter_option(script_path):
     """Filtering function coded by Emil Jaffal."""
-    prompt.sort_formulas_in_excel_or_folder(script_path, os.listdir(script_path))
+    prompt.sort_formulas_in_excel_or_folder(
+        script_path, os.listdir(script_path)
+    )
 
     # Display .cif files and .xlsx files in the script's directory
     available_files = [
@@ -43,7 +45,9 @@ def run_filter_option(script_path):
         "Enter the number corresponding to your choice", type=int
     )
     if 1 <= file_choice <= len(available_files):
-        excel_file_path = os.path.join(script_path, available_files[file_choice - 1])
+        excel_file_path = os.path.join(
+            script_path, available_files[file_choice - 1]
+        )
         click.secho(f"Summarizing file: {excel_file_path}", fg="cyan")
 
     # Define a list of symbols that are not elements
@@ -54,7 +58,9 @@ def run_filter_option(script_path):
 
     # Apply the function to each row in the DataFrame
     parsed_data = (
-        invalid_formulas["Formula"].apply(parser.parse_formula2).apply(pd.Series)
+        invalid_formulas["Formula"]
+        .apply(parser.parse_formula2)
+        .apply(pd.Series)
     )
     invalid_formulas[["Elements", "Counts", "Error"]] = parsed_data.iloc[:, :3]
 
@@ -66,7 +72,9 @@ def run_filter_option(script_path):
         handler.handle_errors(errors_df, excel_file_path, script_path)
 
     # Classification of formulas
-    invalid_formulas_copy = composition.numerical_classification(invalid_formulas)
+    invalid_formulas_copy = composition.numerical_classification(
+        invalid_formulas
+    )
 
     summary_file_path = os.path.join(
         script_path,
@@ -76,7 +84,9 @@ def run_filter_option(script_path):
     click.secho(f"Summary saved to: {summary_file_path}", fg="cyan")
 
     click.secho("Filtering errors out of your dataframe", fg="cyan")
-    filtered_df = invalid_formulas_copy[invalid_formulas_copy["Error"].isnull()]
+    filtered_df = invalid_formulas_copy[
+        invalid_formulas_copy["Error"].isnull()
+    ]
 
     # Save the filtered DataFrame to an Excel file with '_filtered' suffix
     filtered_file_path = os.path.join(
@@ -90,7 +100,9 @@ def run_filter_option(script_path):
         filtered_df, script_path, excel_file_path
     )
 
-    element_count_data_dict = prompt.dataframe_to_dict(element_count_df, elements)
+    element_count_data_dict = prompt.dataframe_to_dict(
+        element_count_df, elements
+    )
 
     print(element_count_data_dict)
 

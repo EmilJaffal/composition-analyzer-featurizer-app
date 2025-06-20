@@ -113,7 +113,8 @@ def get_classic_coordinates() -> dict[str, tuple[float, float]]:
 
 
 def get_special_coordinates() -> dict[str, tuple[float, float]]:
-    """Return special coordinates for lanthanide and actinide placeholders.
+    """Return special coordinates for lanthanide and actinide
+    placeholders.
 
     Symbols with a tuple (x, y), that marks their positions
 

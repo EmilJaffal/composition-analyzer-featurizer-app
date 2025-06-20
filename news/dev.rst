@@ -4,7 +4,7 @@
 
 **Changed:**
 
-* Update appearance of the heatmap periodic table. 
+* Update appearance of the heatmap periodic table.
 
 **Deprecated:**
 

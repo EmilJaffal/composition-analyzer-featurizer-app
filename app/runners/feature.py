@@ -1,9 +1,11 @@
 import os
 import warnings
+
 import click
 import pandas as pd
-from app.util import folder
 from CAF.features import generator
+
+from app.util import folder
 
 """
 Ignore warnings for Pandas
@@ -53,5 +55,7 @@ def run_feature_option(script_dir_path):
     )
 
     generator.get_composition_features(
-        formulas, extended_features=add_extended_features, file_prefix=base_name_no_ext
+        formulas,
+        extended_features=add_extended_features,
+        file_prefix=base_name_no_ext,
     )

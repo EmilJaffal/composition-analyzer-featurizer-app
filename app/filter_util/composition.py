@@ -7,7 +7,9 @@ import pandas as pd
 # 2. Remove any elements if needed -> Save (1) formulas do not contain the elements 2) formulas that contain the element specified
 
 
-def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy):
+def numerical_and_elemental_filtering(
+    filtered_file_path, invalid_formulas_copy
+):
     filter_choice = click.prompt(
         "Would you like to filter based on either numerical or elemental composition? [Y/n]",
         type=str,
@@ -27,7 +29,9 @@ def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy)
             # Group the DataFrame by the 'System' column and iterate over the groups
             for system, group in numerical_df.groupby("System"):
                 # Append system name to the base filename
-                base_name = os.path.splitext(os.path.basename(filtered_file_path))[0]
+                base_name = os.path.splitext(
+                    os.path.basename(filtered_file_path)
+                )[0]
                 file_name = f"{base_name}_{system.lower()}.xlsx"
 
                 # Get the directory of the input file
@@ -38,7 +42,9 @@ def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy)
 
                 group.to_excel(output_file_path, index=False)
 
-                click.echo(f"Entries for {system} saved to: {output_file_path}")
+                click.echo(
+                    f"Entries for {system} saved to: {output_file_path}"
+                )
 
         if filtering_type == 2:
             # Extract unique elements from the DataFrame
@@ -58,7 +64,9 @@ def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy)
                     elem.strip() for elem in elements_to_exclude.split(",")
                 ]
                 # Check if all entered elements are valid
-                if all(elem in unique_elements for elem in elements_to_exclude):
+                if all(
+                    elem in unique_elements for elem in elements_to_exclude
+                ):
                     elemental_df = invalid_formulas_copy.copy()
 
                     filtered_entries = []
@@ -83,9 +91,9 @@ def numerical_and_elemental_filtering(filtered_file_path, invalid_formulas_copy)
 
                     # Get the directory and base name of the input file
                     input_directory = os.path.dirname(filtered_file_path)
-                    base_name = os.path.splitext(os.path.basename(filtered_file_path))[
-                        0
-                    ]
+                    base_name = os.path.splitext(
+                        os.path.basename(filtered_file_path)
+                    )[0]
 
                     # Construct the output file paths
                     filtered_file = os.path.join(
