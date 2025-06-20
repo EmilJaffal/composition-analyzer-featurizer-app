@@ -7,6 +7,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Excel/csv outputs
+*.xlsx
+
 # Distribution / packaging
 .Python
 env/
