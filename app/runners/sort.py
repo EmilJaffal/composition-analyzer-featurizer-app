@@ -9,10 +9,13 @@ from bobleesj.utils.sources.oliynyk import Property as P
 
 from app.util import folder, prompt
 
+
 def run_sort_option(script_dir_path):
     sort_method = prompt.choose_sort_method()
     if sort_method in [1, 2, 3, 4]:
-        formula_excel_path = folder.list_xlsx_files_with_formula(script_dir_path)
+        formula_excel_path = folder.list_xlsx_files_with_formula(
+            script_dir_path
+        )
         if formula_excel_path:
             print(f"You've selected: {formula_excel_path}")
     dir_path, base_name = os.path.split(formula_excel_path)
@@ -34,7 +37,9 @@ def _extract_formulas(df):
     elif "formula" in df.columns:
         return df["formula"].tolist()
     else:
-        raise ValueError("No 'Formula' or 'formula' column found in the Excel file.")
+        raise ValueError(
+            "No 'Formula' or 'formula' column found in the Excel file."
+        )
 
 
 def _save_and_update(df, formulas_sorted, dir_path, filename):
@@ -63,7 +68,9 @@ def _run_sort_by_stoichiometry(formulas, df, dir_path, filename):
         )
         for formula in formulas
     ]
-    filename = _add_suffixes(filename + "_by_stoichiometry", is_ascending, is_normalized)
+    filename = _add_suffixes(
+        filename + "_by_stoichiometry", is_ascending, is_normalized
+    )
     _save_and_update(df, formulas_sorted, dir_path, filename)
 
 
