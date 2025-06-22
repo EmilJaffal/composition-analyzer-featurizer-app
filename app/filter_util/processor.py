@@ -33,7 +33,9 @@ def parse_entry_formula(folder_path):
                 formulas.append(formula)
                 structures.append(structure)
 
-    data = pd.DataFrame({"Entry": entries, "Formula": formulas, "Structure": structures})
+    data = pd.DataFrame(
+        {"Entry": entries, "Formula": formulas, "Structure": structures}
+    )
     return data
 
 
