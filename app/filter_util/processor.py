@@ -16,6 +16,7 @@ def get_excel_df(file_path):
 def parse_entry_formula(folder_path):
     entries = []
     formulas = []
+    structures = []
 
     # Loop through the directory and its subdirectories
     for root, _, files in os.walk(folder_path):
@@ -27,10 +28,12 @@ def parse_entry_formula(folder_path):
                 # Get the formula from the CIF file
                 formula = parser.get_formula_from_cif(file_path)
                 entry = parser.get_cif_entry_id(file_path)
+                structure = parser.get_cif_structure(file_path)
                 entries.append(entry)
                 formulas.append(formula)
+                structures.append(structure)
 
-    data = pd.DataFrame({"Entry": entries, "Formula": formulas})
+    data = pd.DataFrame({"Entry": entries, "Formula": formulas, "Structure": structures})
     return data
 
 
