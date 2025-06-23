@@ -3,7 +3,7 @@ import os
 import click
 import pandas as pd
 from bobleesj.utils.parsers.formula import Formula
-from bobleesj.utils.sorters.elements import Elements
+from bobleesj.utils.sorters.element_sorter import ElementSorter
 from bobleesj.utils.sources.oliynyk import Oliynyk
 from bobleesj.utils.sources.oliynyk import Property as P
 
@@ -48,9 +48,9 @@ def _save_and_update(df, formulas_sorted, dir_path, filename):
 
 
 def _run_sort_by_custom_label(formulas, df, dir_path, filename):
-    elements = Elements(excel_path="data/sort/custom-labels.xlsx")
+    element_sorter = ElementSorter(excel_path="data/sort/custom-labels.xlsx")
     formulas_sorted = [
-        Formula(formula).sort_by_custom_label(elements.label_mapping)
+        Formula(formula).sort_by_custom_label(element_sorter.label_mapping)
         for formula in formulas
     ]
     filename = f"{filename}_by_custom_label"
