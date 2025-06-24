@@ -207,6 +207,19 @@ def extract_tag_from_line(line):
     return None
 
 
+def get_cif_structure(file_path):
+    """Extracts the CIF structure from a file."""
+    target_line_start = "_chemical_name_structure_type"
+
+    with open(file_path, "r") as file:
+        for line in file:
+            if line.strip().startswith(target_line_start):
+                structure = line.split(target_line_start)[-1].strip()
+                return structure
+
+    return "Structure not found"
+
+
 def get_formula_from_cif(file_path):
     """Simply parse the formula from a CIF file Remove "'", empty space
     Order alphabetically."""
